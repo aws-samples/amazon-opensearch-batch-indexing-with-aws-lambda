@@ -1,5 +1,5 @@
-# Amazon Opensearch batch indexing with AWS Lambda
-This repository provides guidance on how to use the Amazon Opensearch Python client to perform batch operations using Lambda functions and how to architect your solution using a data lake architecture. It includes the following files and folders:
+# Amazon OpenSearch batch indexing with AWS Lambda
+This repository provides guidance on how to use the Amazon OpenSearch Python client to perform batch operations using Lambda functions and how to architect your solution using a data lake architecture. It includes the following files and folders:
 
 - Code for the application's Lambda functions:
     - index_documents
@@ -7,7 +7,7 @@ This repository provides guidance on how to use the Amazon Opensearch Python cli
     - calculate_metrics
 - environment.yaml - An environment file that can be used to re-create the virtual environment with the needed dependecies.
 - template.yaml - A template that defines the AWS SAM application's AWS resources: AWS Lambda Functions and IAM Roles.
-- cloudformation-template.yaml - A template to provision the rest of the architecture components: Amazon S3, Amazon Opensearch and AWS Secrets Manager.
+- cloudformation-template.yaml - A template to provision the rest of the architecture components: Amazon S3, Amazon OpenSearch and AWS Secrets Manager.
 
 The application uses several AWS resources, including AWS Lambda functions. These resources are defined in the `template.yaml` and  `cloudformation-template.yaml` files in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
 
@@ -16,9 +16,9 @@ The application uses several AWS resources, including AWS Lambda functions. Thes
 
 ![aws-samples-architecture-diagram.png](aws-samples-architecture-diagram.png)
 
-1. **Index Documents**: Indexes the file from the S3 Raw Zone into an Opensearch index. Stores back the data with the ID of the document into the S3 Clean Zone.
+1. **Index Documents**: Indexes the file from the S3 Raw Zone into an OpenSearch index. Stores back the data with the ID of the document into the S3 Clean Zone.
 2. **Calculate Metrics**: Does sentiment analysis on the data and stores the results in S3 Metrics Zone.
-3. **Update Documents**: Updates the file in Opensearch index with the sentiment analysis metric.
+3. **Update Documents**: Updates the file in OpenSearch index with the sentiment analysis metric.
 
 
 ## Sample Scenario
@@ -38,7 +38,7 @@ To the infrastructure of the scenario, we use CloudFormation and AWS SAM.
 ### Cloudformation Template
 
 Deploy the Cloudformation template in eu-east-1 (N.Virginia)
-- In the parameters section configure your Amazon Opensearch cluster domain name, master username and master password - Remember you credentials log in Opensearch Dashboards.
+- In the parameters section configure your Amazon Opensearch cluster domain name, master username and master password - Remember you credentials log in OpenSearch Dashboards.
 - When deployed, in the Outputs section you will find Values that will be used later on.
 - The SamBucket resource is used to deploy the AWS SAM Application.
 
@@ -75,7 +75,7 @@ sam deploy --stack-name aws-sam-stack --s3-bucket sam-bucket-XXX --region us-eas
 
 ### Sample Data
 
-For this scenario, we use the Amazon Customer Reviews Dataset: Over 130+ million customer reviews of Amazon products are available.
+For this scenario, we use the (https://s3.amazonaws.com/amazon-reviews-pds/readme.html "Amazon Customer Reviews Dataset"): Over 130+ million customer reviews of Amazon products are available.
 
 - We use a small data sample that can be downloaded from the `sample_data` folder of this repository.
 - Upload it to the `RawZoneBucket` created from the Cloudformation template.
