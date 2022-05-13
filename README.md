@@ -75,16 +75,16 @@ sam deploy --stack-name aws-sam-stack --s3-bucket sam-bucket-XXX --region us-eas
 
 ### Sample Data
 
-For this scenario, we use the (https://s3.amazonaws.com/amazon-reviews-pds/readme.html "Amazon Customer Reviews Dataset"): Over 130+ million customer reviews of Amazon products are available.
+For this scenario, we use the [Amazon Customer Reviews Dataset](https://s3.amazonaws.com/amazon-reviews-pds/readme.html): Over 130+ million customer reviews of Amazon products are available.
 
 - We use a small data sample that can be downloaded from the `sample_data` folder of this repository.
 - Upload it to the `RawZoneBucket` created from the Cloudformation template.
 
 ## Running the scenario
 
-1. Log in Opensearch Dashbaords URL with your credentials and open the Dev Tools console 
-    - Console > Amazon Opensearch > cluster > domain > Opensearch Dashbaords URL.
-    - Create an Opensearch index with the default configuration.
+1. Log in OpenSearch Dashbaords URL with your credentials and open the Dev Tools console 
+    - Console > Amazon OpeSsearch > cluster > domain > OpenSearch Dashbaords URL.
+    - Create an OpenSearch index with the default configuration.
 ```bash
 PUT comments-anycompany
 ```
@@ -99,7 +99,7 @@ PUT comments-anycompany
 }
 ```
 
-  -  In the Opensearch Dashboards Dev Tool you can see the indexed documents:
+  -  In the OpenSearch Dashboards Dev Tool you can see the indexed documents:
 ```bash
 GET comments_anycompany/_search
 ```
@@ -121,8 +121,8 @@ GET comments_anycompany/_search
   "index": "comments-anycompany"
 }
 ```
-  -  In the Opensearch Dashboards Dev Tool you can see the indexed documents with the new field `Sentiment`.
-5. Explore the documents by doing some aggregations in the Opensearch Dashboards Dev Tool:
+  -  In the OpenSearch Dashboards Dev Tool you can see the indexed documents with the new field `Sentiment`.
+5. Explore the documents by doing some aggregations in the OpenSearch Dashboards Dev Tool:
 ```bash
 # Example of query: How many comments of each Sentiment do we have?
 GET comments_anycompany/_search
