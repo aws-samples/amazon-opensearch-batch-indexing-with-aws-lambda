@@ -1,7 +1,7 @@
 # Amazon OpenSearch batch indexing with AWS Lambda
 This repository provides guidance on how to use the Amazon OpenSearch Python client to perform batch operations using Lambda functions and how to architect your solution using a data lake architecture. It includes the following files and folders:
 
-- Code for the application's Lambda functions:
+- Lambda function code and requirements folders:
     - index_documents
     - update_documents
     - calculate_metrics
