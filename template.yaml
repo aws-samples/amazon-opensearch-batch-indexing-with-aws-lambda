@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  opensearch-aws-samples
+
+  SAM Template for opensearch-aws-samples
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 256
+
+Resources:
+  IndexDocuments:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: index_documents/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - AmazonS3FullAccess
+        - AmazonOpenSearchServiceFullAccess
+        - SecretsManagerReadWrite
+  UpdateDocuments:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: update_documents/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - AmazonS3FullAccess
+        - AmazonOpenSearchServiceFullAccess
+        - SecretsManagerReadWrite
+  CalculateSentiment:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: calculate_metrics/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - AmazonS3FullAccess
+        - ComprehendFullAccess
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  IndexDocuments:
+    Description: "Index Documents Lambda Function ARN"
+    Value: !GetAtt IndexDocuments.Arn
+  IndexDocumentsIamRole:
+    Description: "Implicit IAM Role created for Index Documents function"
+    Value: !GetAtt IndexDocumentsRole.Arn
+  UpdateDocuments:
+    Description: "Index Documents Lambda Function ARN"
+    Value: !GetAtt UpdateDocuments.Arn
+  UpdateDocumentsRole:
+    Description: "Implicit IAM Role created for Update Documents function"
+    Value: !GetAtt UpdateDocumentsRole.Arn
+  CalculateSentiment:
+    Description: "Index Documents Lambda Function ARN"
+    Value: !GetAtt UpdateDocuments.Arn
+  CalculateSentimentRole:
+    Description: "Implicit IAM Role created for Update Documents function"
+    Value: !GetAtt UpdateDocumentsRole.Arn

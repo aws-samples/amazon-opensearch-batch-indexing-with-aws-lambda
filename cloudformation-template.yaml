@@ -1,0 +1,145 @@
+AWSTemplateFormatVersion: '2010-09-09'
+# Parameters section contains names that are substituted in the Resources section
+# These parameters are the names the resources created in the Data Catalog
+# arn:aws:s3:::alexa-ocaso/data-analytics/*
+# s3://alexa-ocaso/data-analytics/
+Parameters:
+  DomainName:
+    Type: String
+    Description: A name for the Amazon ES domain
+  MasterUsername:
+    Type: String
+    Description: Master usernames must be between 1 and 16 characters.
+  MasterPassword:
+    Type: String
+    Description: Master password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+#
+#
+#
+# Resources section defines metadata for the Data Catalog
+Resources:
+  RawZoneBucket:
+        Type: "AWS::S3::Bucket"
+        Properties:
+          BucketName: !Join
+            - "-"
+            - - "raw-zone"
+              - !Select
+                - 0
+                - !Split
+                  - "-"
+                  - !Select
+                    - 2
+                    - !Split
+                      - "/"
+                      - !Ref "AWS::StackId"
+  SamBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: !Join
+          - "-"
+          - - "sam-bucket"
+            - !Select
+              - 0
+              - !Split
+                - "-"
+                - !Select
+                  - 2
+                  - !Split
+                    - "/"
+                    - !Ref "AWS::StackId"
+  CleanZoneBucket:
+        Type: "AWS::S3::Bucket"
+        Properties:
+          BucketName: !Join
+            - "-"
+            - - "clean-zone"
+              - !Select
+                - 0
+                - !Split
+                  - "-"
+                  - !Select
+                    - 2
+                    - !Split
+                      - "/"
+                      - !Ref "AWS::StackId"
+  MetricsZoneBucket:
+        Type: "AWS::S3::Bucket"
+        Properties:
+          BucketName: !Join
+            - "-"
+            - - "metrics-zone"
+              - !Select
+                - 0
+                - !Split
+                  - "-"
+                  - !Select
+                    - 2
+                    - !Split
+                      - "/"
+                      - !Ref "AWS::StackId"
+  OpenSearchServiceDomain:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      DomainName: !Ref DomainName
+      EngineVersion: 'OpenSearch_1.2'
+      ClusterConfig:
+        DedicatedMasterEnabled: true
+        InstanceCount: '2'
+        ZoneAwarenessEnabled: true
+        InstanceType: 'r6g.large.search'
+        DedicatedMasterType: 'r6g.large.search'
+        DedicatedMasterCount: '3'
+      EBSOptions:
+        EBSEnabled: true
+        Iops: '0'
+        VolumeSize: '20'
+        VolumeType: 'gp2'
+      AccessPolicies:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: '*'
+          Action:
+          - 'es:ESHttp*'
+          Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*'
+      EncryptionAtRestOptions:
+        Enabled: true
+      NodeToNodeEncryptionOptions:
+        Enabled: true
+      DomainEndpointOptions:
+        EnforceHTTPS: true
+      AdvancedSecurityOptions:
+        Enabled: true
+        InternalUserDatabaseEnabled: true
+        MasterUserOptions:
+          MasterUserName: !Ref MasterUsername
+          MasterUserPassword: !Ref MasterPassword
+  MySecretMasterUsername:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Name: os-username
+      Description: Master username for Amazon Opensearch cluster
+      SecretString: !Ref MasterUsername
+  MySecretMasterPassword:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Name: os-password
+      Description: Master password for Amazon Opensearch cluster
+      SecretString: !Ref MasterPassword
+Outputs:
+  RawZoneBucket:
+    Description: Raw Zone Bucket
+    Value: !Ref RawZoneBucket
+  CleanZoneBucket:
+    Description: Clean Zone Bucket
+    Value: !Ref CleanZoneBucket
+  MetricsZoneBucket:
+    Description: Metrics Zone Bucket
+    Value: !Ref MetricsZoneBucket
+  SamBucket:
+    Description: Bucket for AWS SAM
+    Value: !Ref SamBucket
+  DomainEndpoint:
+    Value: !GetAtt OpenSearchServiceDomain.DomainEndpoint

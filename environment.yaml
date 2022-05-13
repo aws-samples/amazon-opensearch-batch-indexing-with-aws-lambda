@@ -1,0 +1,13 @@
+name: opensearch-aws-samples
+channels:
+  - defaults
+dependencies:
+  - python=3.9.0
+  - boto3
+  - botocore
+  - numpy
+  - pandas
+  - pip
+  - requests
+  - pip:
+    - opensearch-py

@@ -1,0 +1,4 @@
+pandas
+opensearch-py
+numpy
+requests
